@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: efs-test-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: efs-test
+  template:
+    metadata:
+      labels:
+        app: efs-test
+    spec:
+      containers:
+      - name: app
+        image: busybox
+        command: ["/bin/sh", "-c", "while true; do echo $(hostname) >> /mnt/efs/data.log; sleep 5; done"]
+        volumeMounts:
+        - name: efs-volume
+          mountPath: /mnt/efs
+      volumes:
+      - name: efs-volume
+        persistentVolumeClaim:
+          claimName: efs-claim
