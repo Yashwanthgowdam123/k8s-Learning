@@ -1,0 +1,22 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: efs-sc
+provisioner: efs.csi.aws.com
+parameters:
+  provisioningMode: efs-ap
+  fileSystemId: <YOUR_FILE_SYSTEM_ID> # Replace with your EFS ID (e.g., fs-12345678)
+  directoryPerms: "0700"
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: efs-claim
+spec:
+  accessModes:
+    - ReadWriteMany # Allows multi-node simultaneous access
+  storageClassName: efs-sc
+  resources:
+    requests:
+      storage: 5Gi
